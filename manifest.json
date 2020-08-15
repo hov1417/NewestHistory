@@ -1,0 +1,17 @@
+{
+  "name": "OnlyNewHistory",
+  "version": "1.0",
+  "description": "auto clear old history elements",
+  "manifest_version": 2,
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "permissions": [
+    "storage",
+    "history",
+    "alarms"
+  ]
+}
