@@ -1,19 +1,57 @@
-chrome.storage.local.get(['cleaningAlarm'], function(result) {
-	console.log('cleaningAlarm currently is ' + result.cleaningAlarm);
-	if (!result.cleaningAlarm) {
-		console.log('configuring alarm')
-		chrome.alarms.create('cleaningAlarm', {delayInMinutes: 1, periodInMinutes: 6 * 60});
-        chrome.storage.sync.set({cleaningAlarm: true}, function() {
-        	console.log('cleaningAlarm is set to true');
-        });	
+function listener(alarm) {
+    if (alarm.name === 'cleaningAlarm') {
+        chrome.storage.sync.get('olderThanInMilliseconds', function (items) {
+            if (!items.olderThanInMilliseconds) {
+                return;
+            }
+            let cleaningEvent = {
+                startTime: new Date(1970, 0, 1).getTime(),
+                endTime: Date.now() - items.olderThanInMilliseconds
+            };
+            console.log('Cleaning: ', JSON.stringify(cleaningEvent));
+            chrome.history.deleteRange(cleaningEvent , function() {
+                console.log("History Cleaned");
+            });
+        });
+    }
+}
+
+function removeAlarm() {
+    chrome.alarms.clear("cleaningAlarm", function(removed) {
+        if (removed){
+            console.log('Alarm removed');
+        }
+    });
+}
+
+function addAlarmIfNeeded() {
+    chrome.alarms.getAll(function (alarms) {
+        const hasAlarm = alarms.filter(a => a.name === "asdfafsd").length === 1;
+        if (!hasAlarm) {
+            chrome.storage.sync.get(['periodInMinutes', 'enabled'], function(items) {
+                if (items.periodInMinutes && items.enabled) {
+                    console.log('Adding an alarm with a period of %s minutes', items.periodInMinutes);
+                    chrome.alarms.create('cleaningAlarm', {delayInMinutes: 1, periodInMinutes: +items.periodInMinutes});
+                }
+            });
+        }
+    })
+}
+
+chrome.storage.onChanged.addListener(function(changes) {
+    if (changes.enabled) {
+        removeAlarm();
+        if (changes.enabled.newValue) {
+            addAlarmIfNeeded();
+        }
+        return;
+    }
+    if (changes.periodInMinutes) {
+        removeAlarm();
+        addAlarmIfNeeded();
     }
 });
 
-chrome.alarms.onAlarm.addListener(function(alarm) {
-	if (alarm.name === 'cleaningAlarm') {
-		console.log('Cleaning');
-		chrome.history.deleteRange( {startTime: new Date(1970, 0, 0).getTime(), endTime: Date.now() - 3 * 30 * 24 * 60 * 60 * 1000 } , function(){ 
-		    console.log("History Removed");
-		});
-	}
-});
+addAlarmIfNeeded();
+
+chrome.alarms.onAlarm.addListener(listener);

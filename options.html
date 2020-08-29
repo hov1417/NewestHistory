@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Newest History - Options </title>
+    <script src="options.js"></script>
+    <style>
+        /* copied from w3schools */
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body style="height: 200px; width: 200px;">
+<center>
+    <label class="switch">
+        <input id="enabled" type="checkbox">
+        <span class="slider round"></span>
+    </label>
+
+    <br>
+    <br>
+    Delete items older than
+    <select id="olderThan">
+        <!-- value in milliseconds -->
+        <option value="86400000"  > 1 day    </option> <!--  1 *  1 * 24 * 60 * 60 * 1000 -->
+        <option value="172800000" > 2 days   </option> <!--  2 *  1 * 24 * 60 * 60 * 1000 -->
+        <option value="259200000" > 3 days   </option> <!--  3 *  1 * 24 * 60 * 60 * 1000 -->
+        <option value="604800000" > 1 week   </option> <!--  1 *  7 * 24 * 60 * 60 * 1000 -->
+        <option value="1209600000"> 2 weeks  </option> <!--  2 *  7 * 24 * 60 * 60 * 1000 -->
+        <option value="1814400000"> 3 weeks  </option> <!--  3 *  7 * 24 * 60 * 60 * 1000 -->
+        <option value="2592000000"> 1 month  </option> <!--  1 * 30 * 24 * 60 * 60 * 1000 -->
+        <option value="5184000000"> 2 months </option> <!--  2 * 30 * 24 * 60 * 60 * 1000 -->
+        <option value="7776000000"> 3 months </option> <!--  3 * 30 * 24 * 60 * 60 * 1000 -->
+    </select>
+
+    <br>
+    <br>
+
+    Clean every
+    <select id="period">
+        <!-- value in minutes -->
+        <option value="60"  > 1 hour  </option> <!-- 1 * 60 -->
+        <option value="120" > 2 hours </option> <!-- 2 * 60 -->
+        <option value="180" > 3 hours </option> <!-- 3 * 60 -->
+        <option value="360" > 6 hours </option> <!-- 6 * 60 -->
+    </select>
+
+    <br>
+
+    <div id="status" style="white-space: pre-line;"></div>
+</center>
+</body>
+</html>
